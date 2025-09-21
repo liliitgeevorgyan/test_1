@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: di-container-app
+    volumes:
+      - .:/var/www
+    working_dir: /var/www
+    command: php example_usage.php
+    environment:
+      - APP_ENV=development
+
+  test:
+    build: .
+    container_name: di-container-test
+    volumes:
+      - .:/var/www
+    working_dir: /var/www
+    command: composer test
+    depends_on:
+      - app
+
+  mysql:
+    image: mysql:8.0
+    container_name: di-container-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: testdb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  redis:
+    image: redis:7-alpine
+    container_name: di-container-redis
+    ports:
+      - "6379:6379"
+
+volumes:
+  mysql_data:
