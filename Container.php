@@ -124,8 +124,8 @@ class Container
         // Check if we have a singleton instance
         if (isset($this->bindings[$abstract]) && 
             $this->bindings[$abstract]['lifecycle'] === 'singleton' && 
-            isset($this->instances[$abstract])) {
-            return $this->instances[$abstract];
+            isset($this->singletonInstances[$abstract])) {
+            return $this->singletonInstances[$abstract];
         }
 
         // Check if we have a per-request instance
@@ -143,7 +143,7 @@ class Container
             $lifecycle = $this->bindings[$abstract]['lifecycle'];
             
             if ($lifecycle === 'singleton') {
-                $this->instances[$abstract] = $instance;
+                $this->singletonInstances[$abstract] = $instance;
             } elseif ($lifecycle === 'per-request') {
                 $this->requestInstances[$abstract] = $instance;
             }
@@ -250,7 +250,7 @@ class Container
      */
     public function clearInstances(): void
     {
-        $this->instances = [];
+        $this->singletonInstances = [];
         $this->requestInstances = [];
     }
 
